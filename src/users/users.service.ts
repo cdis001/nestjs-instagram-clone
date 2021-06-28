@@ -6,29 +6,44 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-    constructor(
-      @InjectRepository(User)
-      private usersRepository: Repository<User>,
-    ) {}
-  
-    findAll(): Promise<User[]> {
-      return this.usersRepository.find();
-    }
-  
-    findOne(id: string): Promise<User> {
-      return this.usersRepository.findOne(id);
-    }
-  
-    findByAccountName(accountName: string): Promise<User> {
-        return this.usersRepository.findOne(accountName);
-    }
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-    async remove(id: string): Promise<void> {
-      await this.usersRepository.delete(id);
-    }
-
-    async create(user: User): Promise<User> {
-        await this.usersRepository.save(user);
-        return user;
-      }
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
+
+  findById(id: string): Promise<User> {
+    const user = this.usersRepository.findOne({ id });
+
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  findByAccountName(accountName: string): Promise<User> {
+    const user = this.usersRepository.findOne({ accountName });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.usersRepository.delete(id);
+  }
+
+  async create(user: User): Promise<User> {
+    await this.usersRepository.save(user);
+    return user;
+  }
+}

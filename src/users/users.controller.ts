@@ -14,11 +14,6 @@ export class UsersController {
 
     @Get(':id')
     getById(@Param() id: string): Promise<User> {
-        return this.usersService.findOne(id);
-    }
-
-    @Post('signup')
-    signup(@Body() user: User): Promise<any> {
-        return this.usersService.create(user);
+        return this.usersService.findById(id);
     }
 }
