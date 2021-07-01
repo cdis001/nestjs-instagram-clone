@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -25,6 +26,11 @@ export class User {
     
     @Column({ nullable: true })
     birthday: string;
+    
+    // Exclude를 이용해 민감한 데이터를 응답에서 제외
+    @Exclude()
+    @Column({ nullable: true })
+    refreshToken: string;
 
     @CreateDateColumn() createdAt: Date;
   

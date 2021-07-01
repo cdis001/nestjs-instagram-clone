@@ -7,4 +7,5 @@ export class UsersDTO {
     password!: string;
     gender: string;
     birthday: string;
+    refreshToken: string;
   }

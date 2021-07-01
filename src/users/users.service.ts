@@ -1,6 +1,7 @@
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { hash } from 'bcrypt';
 
 import { User } from './user.entity';
 
@@ -45,5 +46,10 @@ export class UsersService {
   async create(user: User): Promise<User> {
     await this.usersRepository.save(user);
     return user;
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, id: string) {
+    const currentHashedRefreshToken = await hash(refreshToken, 10);
+    await this.usersRepository.update(id, { refreshToken: currentHashedRefreshToken });    
   }
 }

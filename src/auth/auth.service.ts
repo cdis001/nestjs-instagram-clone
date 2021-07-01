@@ -78,4 +78,31 @@ export class AuthService {
       );
     }
   }
+
+  async getAccessToken(user: any) {
+    const payload = { accountName: user.accountName, sub: user.id };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_ACCESS_SECRET_KEY,
+      expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME})
+    
+    return {
+      accessToken,
+      httpOnly: true,
+      maxAge: Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) * 1000
+    }
+  }
+
+  async getRefreshToken(user: any) {
+    const payload = { accountName: user.accountName, sub: user.id };
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_SECRET_KEY,
+      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME})
+    
+    return {
+      refreshToken,
+      httpOnly: true,
+      maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+    }
+  }
+
 }
