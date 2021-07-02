@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: tester01
       POSTGRES_PASSWORD: password
       POSTGRES_DB: test01
-    volumes:
-      - ../data:/var/lib/postgresql/data
+    # volumes:
+    #   - ../data:/var/lib/postgresql/data
     ports:
       - 5432:5432
   db-admin:
