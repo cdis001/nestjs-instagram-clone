@@ -50,6 +50,12 @@ export class UsersService {
 
   async setCurrentRefreshToken(refreshToken: string, id: string) {
     const currentHashedRefreshToken = await hash(refreshToken, 10);
-    await this.usersRepository.update(id, { refreshToken: currentHashedRefreshToken });    
+    await this.usersRepository.update(id, {
+      refreshToken: currentHashedRefreshToken,
+    });
+  }
+
+  async removeRefreshToken(id: string) {
+    await this.usersRepository.update(id, { refreshToken: null });
   }
 }

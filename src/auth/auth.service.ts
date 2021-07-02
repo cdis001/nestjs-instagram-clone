@@ -79,7 +79,7 @@ export class AuthService {
     }
   }
 
-  async getAccessToken(user: any) {
+  getAccessToken(user: any) {
     const payload = { accountName: user.accountName, sub: user.id };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET_KEY,
@@ -92,7 +92,7 @@ export class AuthService {
     }
   }
 
-  async getRefreshToken(user: any) {
+  getRefreshToken(user: any) {
     const payload = { accountName: user.accountName, sub: user.id };
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET_KEY,
@@ -103,6 +103,23 @@ export class AuthService {
       httpOnly: true,
       maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
     }
+  }
+
+  getCookiesForLogOut() {
+    return {
+      accessOption: {
+        domain: 'localhost',
+        path: '/',
+        httpOnly: true,
+        maxAge: 0,
+      },
+      refreshOption: {
+        domain: 'localhost',
+        path: '/',
+        httpOnly: true,
+        maxAge: 0,
+      },
+    };
   }
 
 }

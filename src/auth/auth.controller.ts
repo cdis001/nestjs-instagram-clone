@@ -19,20 +19,34 @@ export class AuthController {
     const userInfo = await this.authService.validateUser(accountName, password);
 
     const { accessToken, ...accessOption } =
-      await this.authService.getAccessToken(userInfo);
+      this.authService.getAccessToken(userInfo);
 
-    const { refreshToken, ...refreshOption } = await this.authService.getRefreshToken(userInfo);
+    const { refreshToken, ...refreshOption } = this.authService.getRefreshToken(userInfo);
 
     await this.usersService.setCurrentRefreshToken(refreshToken, userInfo.id)
 
-    await res.cookie('Authorization', accessToken, accessOption);
-    await res.cookie('Refresh', refreshToken, refreshOption);
+    res.cookie('Authorization', accessToken, accessOption);
+    res.cookie('Refresh', refreshToken, refreshOption);
 
-    return user;
+    return userInfo;
   }
 
   @Post('register')
   async register(@Body() user: User): Promise<any> {
     return this.authService.register(user);
+  }
+
+  @Post('logout')
+  async logout(@Req() req, @Res({ passthrough: true }) res) {
+    const user = req.body
+    const {
+        accessOption,
+        refreshOption,
+      } = this.authService.getCookiesForLogOut();
+  
+      await this.usersService.removeRefreshToken(user.id);
+  
+      res.cookie('Authentication', '', accessOption);
+      res.cookie('Refresh', '', refreshOption);
   }
 }
