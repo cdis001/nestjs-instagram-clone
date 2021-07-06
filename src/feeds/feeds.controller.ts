@@ -10,13 +10,14 @@ import {
 
 import { FeedsService } from './feeds.service';
 import { Feed } from './feed.entity';
+import { FeedsDTO } from './feeds.dto';
 
 @Controller('feeds')
 export class FeedsController {
   constructor(private readonly feedsService: FeedsService) {}
 
   @Post()
-  create(@Body() feed: Feed) {
+  create(@Body() feed: FeedsDTO) {
     return this.feedsService.create(feed);
   }
 
@@ -27,7 +28,7 @@ export class FeedsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.feedsService.findOne(+id);
+    return this.feedsService.findById(+id);
   }
 
   @Patch(':id')
