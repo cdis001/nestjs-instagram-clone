@@ -8,35 +8,42 @@ import { FeedsDTO } from './feeds.dto';
 
 @Injectable()
 export class FeedsService {
-  constructor(
-    @InjectRepository(Feed)
-    private feedsRepository: Repository<Feed>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+    constructor(
+        @InjectRepository(Feed)
+        private feedRepository: Repository<Feed>,
+        
+        @InjectRepository(User)
+        private userRepository: Repository<User>
+        ) {}
 
-  async create(feed: FeedsDTO) {
-    const data = await this.feedsRepository.create(feed)
-    // const user = await this.usersRepository.findOne({id: feed.userId})
-    // console.log(user.accountName)
-    // data.user = user;
-    await this.feedsRepository.save(data);
-    return data;
-  }
+    findAll(): Promise<Feed[]> {
+        return this.feedRepository.find();
+    }
 
-  findAll() {
-    return this.feedsRepository.find();
-  }
+    findById(id: string): Promise<Feed> {
+        return this.feedRepository.findOne({id})
+    }
 
-  findById(id: number) {
-    return `This action returns a #${id} feed`;
-  }
+    async findByUserId(userId: string) {
+        const user = await this.userRepository.findOne({id: userId})
+        const data = this.feedRepository.find({user})
+        return data
+    }
 
-  update(id: number, feed: Feed) {
-    return `This action updates a #${id} feed`;
-  }
+    async create(feed: FeedsDTO) {
+        const user = await this.userRepository.findOne({id: feed.userId})
+        const data = await this.feedRepository.create(feed)
+        data.user = user;
 
-  remove(id: number) {
-    return `This action removes a #${id} feed`;
-  }
+        return await this.feedRepository.save(data)
+    }
+
+    async remove(id: string) {
+      await this.feedRepository.delete(id);
+    }
+
+    async update(id: string, feed: Feed) {
+        await this.feedRepository.update({id}, feed)
+        return feed;
+    }
 }
