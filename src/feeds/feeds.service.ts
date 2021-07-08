@@ -8,42 +8,50 @@ import { FeedsDTO } from './feeds.dto';
 
 @Injectable()
 export class FeedsService {
-    constructor(
-        @InjectRepository(Feed)
-        private feedRepository: Repository<Feed>,
-        
-        @InjectRepository(User)
-        private userRepository: Repository<User>
-        ) {}
+  constructor(
+    @InjectRepository(Feed)
+    private feedRepository: Repository<Feed>,
 
-    findAll(): Promise<Feed[]> {
-        return this.feedRepository.find();
-    }
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
-    findById(id: string): Promise<Feed> {
-        return this.feedRepository.findOne({id})
-    }
+  async findAll() {
+    const data = await this.feedRepository.find({ relations: ['user'] });
+    return data
+  }
 
-    async findByUserId(userId: string) {
-        const user = await this.userRepository.findOne({id: userId})
-        const data = this.feedRepository.find({user})
-        return data
-    }
+  findById(id: string): Promise<Feed> {
+    return this.feedRepository.findOne({ id });
+  }
 
-    async create(feed: FeedsDTO) {
-        const user = await this.userRepository.findOne({id: feed.userId})
-        const data = await this.feedRepository.create(feed)
-        data.user = user;
+  async findByUserId(userId: string) {
+    const user = await this.userRepository.findOne({ id: userId });
+    const data = this.feedRepository
+      .createQueryBuilder('feed')
+      .leftJoinAndSelect('feed.user', 'user')
+      .where({ user })
+      .andWhere('user.id = :userId', { userId: user.id })
+      .select(['user.id', 'user.accountName', 'user.userName', 'feed.*'])
+      .execute();
+      
+    return data;
+  }
 
-        return await this.feedRepository.save(data)
-    }
+  async create(feed: FeedsDTO) {
+    const user = await this.userRepository.findOne({ id: feed.userId });
+    const data = await this.feedRepository.create(feed);
+    data.user = user;
 
-    async remove(id: string) {
-      await this.feedRepository.delete(id);
-    }
+    return await this.feedRepository.save(data);
+  }
 
-    async update(id: string, feed: Feed) {
-        await this.feedRepository.update({id}, feed)
-        return feed;
-    }
+  async remove(id: string) {
+    await this.feedRepository.delete(id);
+  }
+
+  async update(id: string, feed: Feed) {
+    await this.feedRepository.update({ id }, feed);
+    return feed;
+  }
 }
