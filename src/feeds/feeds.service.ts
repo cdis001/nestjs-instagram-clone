@@ -18,14 +18,14 @@ export class FeedsService {
 
   async findAll() {
     const data = await this.feedRepository.find({ relations: ['user'] });
-    return data
+    return data;
   }
 
   findById(id: string): Promise<Feed> {
     return this.feedRepository.findOne({ id });
   }
 
-  async findByUserId(userId: string) {
+  async findByUserId(userId: string, index: number, take: number = 10) {
     const user = await this.userRepository.findOne({ id: userId });
     const data = this.feedRepository
       .createQueryBuilder('feed')
@@ -33,8 +33,10 @@ export class FeedsService {
       .where({ user })
       .andWhere('user.id = :userId', { userId: user.id })
       .select(['user.id', 'user.accountName', 'user.userName', 'feed.*'])
+      .take(take)
+      .skip(index)
       .execute();
-      
+
     return data;
   }
 
