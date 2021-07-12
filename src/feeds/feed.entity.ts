@@ -19,6 +19,9 @@ export class Feed {
   @JoinColumn({ name: 'userId' })
   user!: User;
 
+  @Column('text', { nullable: true, array: true })
+  files: string[];
+
   @Column({ nullable: true })
   contents: string;
 

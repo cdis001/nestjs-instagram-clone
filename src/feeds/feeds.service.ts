@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UploadedFiles } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from 'src/users/user.entity';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
+import { createImageURL } from 'src/file/multerOption';
 
 @Injectable()
 export class FeedsService {
@@ -36,6 +37,16 @@ export class FeedsService {
       .execute();
       
     return data;
+  }
+
+  uploadFiles(@UploadedFiles() files: Express.Multer.File): string[] {
+    const generatedFiles: string[] = []
+    generatedFiles.push(createImageURL(files));
+
+    // for (const file of files) {
+    //   generatedFiles.push(createImageURL(file));
+    // }
+    return generatedFiles;
   }
 
   async create(feed: FeedsDTO) {
