@@ -40,8 +40,9 @@ export class FeedsController {
   }
 
   @Get('user/:id')
-  findByUserId(@Param('id') userId: string) {
-    return this.feedsService.findByUserId(userId);
+  findByUserId(@Param('id') userId: string, @Body() data: any) {
+    const { index } = data;
+    return this.feedsService.findByUserId(userId, index);
   }
 
   @Patch(':id')
