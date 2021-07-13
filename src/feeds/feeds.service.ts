@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
-import { createImageURL } from 'src/file/multerOption';
+import { createImageURL } from 'src/lib/multerOption';
 
 @Injectable()
 export class FeedsService {
@@ -41,13 +41,12 @@ export class FeedsService {
     return data;
   }
 
-  uploadFiles(@UploadedFiles() files: Express.Multer.File): string[] {
+  uploadFiles(@UploadedFiles() files: Express.Multer.File[]): string[] {
     const generatedFiles: string[] = []
-    generatedFiles.push(createImageURL(files));
 
-    // for (const file of files) {
-    //   generatedFiles.push(createImageURL(file));
-    // }
+    for (const file of files) {
+      generatedFiles.push(createImageURL(file));
+    }
     return generatedFiles;
   }
 

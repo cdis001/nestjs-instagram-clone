@@ -7,23 +7,29 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { FeedsService } from './feeds.service';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
+import { multerOptions } from 'src/lib/multerOption';
 
 @Controller('feeds')
 export class FeedsController {
   constructor(private readonly feedsService: FeedsService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  create(@Body() feed: FeedsDTO, @UploadedFile() files: Express.Multer.File) {
-    console.log(feed)
-    console.log(files)
+  @UseInterceptors(
+    FilesInterceptor('file', null, multerOptions),
+  )
+  create(
+    @Body() feed: FeedsDTO,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    // console.log(feed);
+    // console.log(files);
     const uploadedFiles: string[] = this.feedsService.uploadFiles(files);
     feed.files = uploadedFiles;
     return this.feedsService.create(feed);
