@@ -8,8 +8,10 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
 
 import { FeedsService } from './feeds.service';
 import { Feed } from './feed.entity';
@@ -21,6 +23,7 @@ export class FeedsController {
   constructor(private readonly feedsService: FeedsService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FilesInterceptor('file', null, multerOptions),
   )
@@ -36,6 +39,7 @@ export class FeedsController {
   }
 
   @Get()
+  // @UseGuards(AuthGuard('local'))
   findAll() {
     return this.feedsService.findAll();
   }
