@@ -10,6 +10,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 import { Feed } from 'src/feeds/feed.entity';
+import { Comment } from 'src/comments/comment.entity';
 
 @Entity()
 export class User {
@@ -18,6 +19,9 @@ export class User {
 
   @OneToMany((type) => Feed, (feed) => feed.user)
   feeds: Feed[];
+
+  @OneToMany((type) => Comment, (commnet) => commnet.user)
+  comments: Comment[];
 
   @Column({ nullable: true, unique: true })
   phoneNumber: string;

@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 
 import { User } from 'src/users/user.entity';
+import { Comment } from 'src/comments/comment.entity';
 
 @Entity()
 export class Feed {
@@ -18,6 +20,9 @@ export class Feed {
   @ManyToOne((type) => User, (user) => user.feeds, { nullable: false })
   @JoinColumn({ name: 'userId' })
   user!: User;
+
+  @OneToMany((type) => Comment, (comment) => comment.feed)
+  comments: Comment[];
 
   @Column('text', { nullable: true, array: true })
   files: string[];

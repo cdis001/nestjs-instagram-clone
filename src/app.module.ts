@@ -6,6 +6,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { FeedsModule } from './feeds/feeds.module';
+import { CommentsController } from './comments/comments.controller';
+import { CommentsService } from './comments/comments.service';
+import { CommentsModule } from './comments/comments.module';
 require('dotenv').config();
 
 @Module({
@@ -23,8 +26,9 @@ require('dotenv').config();
     AuthModule,
     UsersModule,
     FeedsModule,
+    CommentsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, CommentsController],
+  providers: [AppService, CommentsService],
 })
 export class AppModule {}
