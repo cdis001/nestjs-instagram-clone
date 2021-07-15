@@ -88,7 +88,7 @@ export class AuthService {
     return {
       accessToken,
       httpOnly: true,
-      maxAge: Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME) * 1000
+      maxAge: Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)
     }
   }
 
@@ -101,7 +101,7 @@ export class AuthService {
     return {
       refreshToken,
       httpOnly: true,
-      maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME) * 1000
+      maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME)
     }
   }
 
