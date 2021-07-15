@@ -1,5 +1,8 @@
 export class FeedsDTO {
-  id: string;
-  contents!: string;
-  location: string;
-}
+    id: string;
+    userId!: string;
+    files: string[];
+    contents: string;
+    location: string;
+    isHide: boolean;
+  }

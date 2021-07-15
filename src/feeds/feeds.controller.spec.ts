@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FeedsController } from './feeds.controller';
-import { FeedsService } from './feeds.service';
 
 describe('FeedsController', () => {
   let controller: FeedsController;
@@ -8,7 +7,6 @@ describe('FeedsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FeedsController],
-      providers: [FeedsService],
     }).compile();
 
     controller = module.get<FeedsController>(FeedsController);

@@ -4,18 +4,32 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+
+import { User } from 'src/users/user.entity';
 
 @Entity()
 export class Feed {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ nullable: true, unique: true })
-  phoneNumber: string;
+  @ManyToOne((type) => User, (user) => user.feeds, { nullable: false })
+  @JoinColumn({ name: 'userId' })
+  user!: User;
 
-  @Column({ nullable: true, unique: true })
-  email: string;
+  @Column('text', { nullable: true, array: true })
+  files: string[];
+
+  @Column({ nullable: true })
+  contents: string;
+
+  @Column({ nullable: true })
+  location: string;
+
+  @Column({ default: false })
+  isHide: boolean;
 
   @CreateDateColumn() createdAt: Date;
 
