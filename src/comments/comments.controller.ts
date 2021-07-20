@@ -19,6 +19,21 @@ export class CommentsController {
         return this.commentsService.findAll();
     }
 
+    @Get(":id")
+    findById(@Param('id') id: string) {
+        return this.commentsService.findById(id);
+    }
+
+    @Get("user/:id")
+    findByUserId(@Param('id') id: string) {
+        return this.commentsService.findByUserId(id);
+    }
+
+    @Get("feed/:id")
+    findByFeedId(@Param('id') id: string) {
+        return this.commentsService.findByFeedId(id);
+    }
+
     @Patch(':id')
     update(@Param('id') id: string, @Body() comments: CommentsDTO) {
         return this.commentsService.update(id, comments)

@@ -24,11 +24,60 @@ export class CommentsService {
     const data = await this.commentRepository.find({
       relations: ['user', 'feed'],
     });
-    return data;
+
+    const result = data.map((data) => {
+      const { id, user, feed, contents, createdAt, updatedAt } = data;
+      const { password, refreshToken, ...userData } = user;
+      // const {...feedData} = feed
+
+      return { id, user: userData, feed, contents, createdAt, updatedAt };
+    });
+    return result;
   }
 
-  findById(id: string): Promise<Comment> {
-    return this.commentRepository.findOne({ id });
+  async findByUserId(id: string) {
+    const user = await this.userRepository.findOne({ id });
+    const data = await this.commentRepository.find({
+      where: { user },
+      relations: ['user', 'feed'],
+    });
+
+    const result = data.map((data) => {
+      const { id, user, feed, contents, createdAt, updatedAt } = data;
+      const { password, refreshToken, ...userData } = user;
+      // const {...feedData} = feed
+
+      return { id, user: userData, feed, contents, createdAt, updatedAt };
+    });
+
+    return result;
+  }
+
+  async findByFeedId(id: string) {
+    const feed = await this.feedRepository.findOne({ id });
+    const data = await this.commentRepository.find({
+      where: { feed },
+      relations: ['user', 'feed'],
+    });
+
+    const result = data.map((data) => {
+      const { id, user, feed, contents, createdAt, updatedAt } = data;
+      const { password, refreshToken, ...userData } = user;
+      // const {...feedData} = feed
+
+      return { id, user: userData, feed, contents, createdAt, updatedAt };
+    });
+
+    return result;
+  }
+
+  async findById(id: string) {
+    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user', 'feed'], });
+    const { user, feed, contents, createdAt, updatedAt } = data;
+    const { password, refreshToken, ...userData } = user;
+    // const {...feedData} = feed
+
+    return { id, user: userData, feed, contents, createdAt, updatedAt };
   }
 
   async create(comment: CommentsDTO) {
