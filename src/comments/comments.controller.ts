@@ -36,11 +36,13 @@ export class CommentsController {
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() comments: CommentsDTO) {
-        return this.commentsService.update(id, comments)
+        const {userId} = comments
+        
+        return this.commentsService.update(id, comments, userId)
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
-        return this.commentsService.remove(id)
+    delete(@Param('id') id: string, @Body() userId: string) {
+        return this.commentsService.remove(id, userId)
     }
 }

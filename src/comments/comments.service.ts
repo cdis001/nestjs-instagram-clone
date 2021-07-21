@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -99,12 +99,30 @@ export class CommentsService {
     return await this.commentRepository.save(data);
   }
 
-  async update(id: string, comment: CommentsDTO) {
+  async update(id: string, comment: CommentsDTO, userId: string) {
+    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user'] });
+
+    if (data.user.id !== userId) {
+      throw new HttpException(
+        '작성자만 수정할 수 있습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.commentRepository.update({ id }, comment);
     return comment;
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user'] });
+
+    if (data.user.id !== userId) {
+      throw new HttpException(
+        '작성자만 삭제할 수 있습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.commentRepository.delete(id);
   }
 }
