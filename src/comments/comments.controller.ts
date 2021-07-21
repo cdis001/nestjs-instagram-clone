@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { CommentsService } from './comments.service';
@@ -15,8 +15,8 @@ export class CommentsController {
     }
 
     @Get()
-    findAll() {
-        return this.commentsService.findAll();
+    findAll(@Query('index') index: number) {
+        return this.commentsService.findAll(index);
     }
 
     @Get(":id")
@@ -25,13 +25,13 @@ export class CommentsController {
     }
 
     @Get("user/:id")
-    findByUserId(@Param('id') id: string) {
-        return this.commentsService.findByUserId(id);
+    findByUserId(@Param('id') id: string, @Query('index') index: number) {
+        return this.commentsService.findByUserId(id, index);
     }
 
     @Get("feed/:id")
-    findByFeedId(@Param('id') id: string) {
-        return this.commentsService.findByFeedId(id);
+    findByFeedId(@Param('id') id: string, @Query('index') index: number) {
+        return this.commentsService.findByFeedId(id, index);
     }
 
     @Patch(':id')

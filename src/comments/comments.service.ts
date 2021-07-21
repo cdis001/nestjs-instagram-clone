@@ -20,9 +20,11 @@ export class CommentsService {
     private feedRepository: Repository<Feed>,
   ) {}
 
-  async findAll() {
+  async findAll(index: number, take: number = 10) {
     const data = await this.commentRepository.find({
       relations: ['user', 'feed'],
+      skip: index,
+      take,
     });
 
     const result = data.map((data) => {
@@ -35,11 +37,13 @@ export class CommentsService {
     return result;
   }
 
-  async findByUserId(id: string) {
+  async findByUserId(id: string, index: number, take: number = 10) {
     const user = await this.userRepository.findOne({ id });
     const data = await this.commentRepository.find({
       where: { user },
       relations: ['user', 'feed'],
+      skip: index,
+      take,
     });
 
     const result = data.map((data) => {
@@ -53,11 +57,13 @@ export class CommentsService {
     return result;
   }
 
-  async findByFeedId(id: string) {
+  async findByFeedId(id: string, index: number, take: number = 10) {
     const feed = await this.feedRepository.findOne({ id });
     const data = await this.commentRepository.find({
       where: { feed },
       relations: ['user', 'feed'],
+      skip: index,
+      take,
     });
 
     const result = data.map((data) => {
@@ -72,7 +78,10 @@ export class CommentsService {
   }
 
   async findById(id: string) {
-    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user', 'feed'], });
+    const data = await this.commentRepository.findOne({
+      where: { id },
+      relations: ['user', 'feed'],
+    });
     const { user, feed, contents, createdAt, updatedAt } = data;
     const { password, refreshToken, ...userData } = user;
     // const {...feedData} = feed
