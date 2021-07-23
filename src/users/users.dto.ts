@@ -1,6 +1,8 @@
 export class UsersDTO {
     id: string;
     feedsId: string;
+    commentsId: string;
+    likesId!: string;
     phoneNumber: string;
     email: string;
     userName!: string;

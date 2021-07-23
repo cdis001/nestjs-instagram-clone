@@ -57,6 +57,7 @@ export class FeedsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() feed: Feed) {
+    console.log(id);
     return this.feedsService.update(id, feed);
   }
 

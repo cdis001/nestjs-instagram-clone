@@ -11,6 +11,7 @@ import { Exclude } from 'class-transformer';
 
 import { Feed } from 'src/feeds/feed.entity';
 import { Comment } from 'src/comments/comment.entity';
+import { Like } from 'src/likes/like.entity';
 
 @Entity()
 export class User {
@@ -22,6 +23,9 @@ export class User {
 
   @OneToMany((type) => Comment, (commnet) => commnet.user)
   comments: Comment[];
+
+  @OneToMany((type) => Like, (like) => like.feed)
+  likes!: Like[];
 
   @Column({ nullable: true, unique: true })
   phoneNumber: string;

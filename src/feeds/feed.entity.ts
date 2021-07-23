@@ -11,6 +11,7 @@ import {
 
 import { User } from 'src/users/user.entity';
 import { Comment } from 'src/comments/comment.entity';
+import { Like } from 'src/likes/like.entity';
 
 @Entity()
 export class Feed {
@@ -23,6 +24,9 @@ export class Feed {
 
   @OneToMany((type) => Comment, (comment) => comment.feed)
   comments: Comment[];
+  
+  @OneToMany((type) => Like, (like) => like.feed)
+  likes!: Like[];
 
   @Column('text', { nullable: true, array: true })
   files: string[];
