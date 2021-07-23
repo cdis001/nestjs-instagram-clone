@@ -52,14 +52,77 @@ export class LikesService {
       relations: ['user', 'feed', 'comment'],
     });
 
-    return data;
+    const result = data.map((data) => {
+      const {user, ...likeDatas} = data
+      const {password, refreshToken, ...userData} = user
+
+      return {like: likeDatas, user: userData}
+    })
+
+    return result;
+  }
+
+  async findById(id: string) {
+    const data = await this.likeRepository.findOne({where: {id}, relations: ['user', 'feed', 'comment']})
+    
+    
+    const {user, ...likeDatas} = data
+    const {password, refreshToken, ...userData} = user
+
+    return {like: likeDatas, user: userData}
+  }
+
+  async findByFeedId(id: string){
+    const feed = await this.feedRepository.findOne({id})
+    const data = await this.likeRepository.find({where: {feed}, relations: ['feed', 'user']})
+
+    const result = data.map((data) => {
+      const {user, ...likeDatas} = data
+      const {password, refreshToken, ...userData} = user
+
+      return {like: likeDatas, user: userData}
+    })
+
+    return result
+  }
+
+  async findByCommentId(id: string){
+    const comment = await this.commentRepository.findOne({id})
+    const data = await this.likeRepository.find({where: {comment}, relations: ['comment', 'user']})
+
+    const result = data.map((data) => {
+      const {user, ...likeDatas} = data
+      const {password, refreshToken, ...userData} = user
+
+      return {like: likeDatas, user: userData}
+    })
+
+    return result
   }
 
   async update(id: string, like: LikesDTO) {
-    return await this.likeRepository.update({ id }, like);
+    const data = await this.likeRepository.findOne({where: {id}, relations: ['user']});
+    const {userId, ...newLike} = like
+
+    if (data.user.id !== userId) {
+      throw new HttpException(
+        '작성자만 수정할 수 있습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    
+    return await this.likeRepository.update({ id }, newLike);
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    const data = await this.likeRepository.findOne({where: {id}, relations: ['user']});
+    
+    if (data.user.id !== userId) {
+      throw new HttpException(
+        '작성자만 수정할 수 있습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.likeRepository.delete(id);
   }
 }
