@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { Feed } from 'src/feeds/feed.entity';
 import { Comment } from 'src/comments/comment.entity';
 import { Like } from 'src/likes/like.entity';
+import { Profile } from 'src/profiles/profile.entity';
 
 @Entity()
 export class User {
@@ -27,6 +29,9 @@ export class User {
   @OneToMany((type) => Like, (like) => like.feed)
   likes!: Like[];
 
+  @OneToOne(() => Profile)
+  profile: Profile;
+
   @Column({ nullable: true, unique: true })
   phoneNumber: string;
 
@@ -41,12 +46,6 @@ export class User {
 
   @Column()
   password: string;
-
-  @Column({ nullable: true })
-  gender: string;
-
-  @Column({ nullable: true })
-  birthday: string;
 
   // Exclude를 이용해 민감한 데이터를 응답에서 제외
   @Exclude()

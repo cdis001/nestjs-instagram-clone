@@ -10,6 +10,9 @@ import { CommentsController } from './comments/comments.controller';
 import { CommentsService } from './comments/comments.service';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { ProfilesController } from './profiles/profiles.controller';
+import { ProfilesService } from './profiles/profiles.service';
+import { ProfilesModule } from './profiles/profiles.module';
 require('dotenv').config();
 
 @Module({
@@ -29,8 +32,9 @@ require('dotenv').config();
     FeedsModule,
     CommentsModule,
     LikesModule,
+    ProfilesModule,
   ],
-  controllers: [AppController, CommentsController],
-  providers: [AppService, CommentsService],
+  controllers: [AppController, CommentsController, ProfilesController],
+  providers: [AppService, CommentsService, ProfilesService],
 })
 export class AppModule {}
