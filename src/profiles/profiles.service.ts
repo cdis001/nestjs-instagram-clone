@@ -20,12 +20,27 @@ export class ProfilesService {
     const user = await this.userRepository.findOne({ id: profile.userId });
     const data = await this.profileRepository.create(profile);
     data.user = user;
+    
+    await this.profileRepository.save(data);
 
-    return await this.profileRepository.save(data);
+    return profile;
   }
 
   async findAll() {
     return await this.profileRepository.find();
+  }
+
+  async findByUserId(userId: string) {
+    const user = await this.userRepository.findOne({ id: userId });
+    const data = await this.profileRepository.findOne({
+      where: { user },
+      relations: ['user'],
+    });
+
+    const { password, refreshToken, ...userData } = data.user;
+    const { id, gender, birthday } = data;
+
+    return { id, user: userData, gender, birthday };
   }
 
   async update(profile: ProfilesDTO, id: string) {

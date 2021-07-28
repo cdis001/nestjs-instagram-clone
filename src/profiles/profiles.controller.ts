@@ -25,6 +25,11 @@ export class ProfilesController {
     return this.profilesService.findAll();
   }
 
+  @Get('user/:id')
+  findByUserId(@Param('id') userId: string) {
+    return this.profilesService.findByUserId(userId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() profile: ProfilesDTO) {
     return this.profilesService.update(profile, id);
