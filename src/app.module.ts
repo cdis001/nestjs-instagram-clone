@@ -13,6 +13,7 @@ import { LikesModule } from './likes/likes.module';
 import { ProfilesController } from './profiles/profiles.controller';
 import { ProfilesService } from './profiles/profiles.service';
 import { ProfilesModule } from './profiles/profiles.module';
+import { FilesModule } from './files/files.module';
 require('dotenv').config();
 
 @Module({
@@ -33,6 +34,7 @@ require('dotenv').config();
     CommentsModule,
     LikesModule,
     ProfilesModule,
+    FilesModule,
   ],
   controllers: [AppController, CommentsController, ProfilesController],
   providers: [AppService, CommentsService, ProfilesService],
