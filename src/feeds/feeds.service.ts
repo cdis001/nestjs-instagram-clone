@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
-import { createImageURL } from 'src/lib/multerOption';
+import { createImageURL } from 'src/files/multerOption';
 
 @Injectable()
 export class FeedsService {
