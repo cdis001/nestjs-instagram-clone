@@ -16,5 +16,5 @@ export const multerOptions = {
 export const createImageURL = (file): string => {
   const serverAddress: string = process.env.SERVER_ADDRESS;
 
-  return `${serverAddress}/uploads/${file.originalname}`;
+  return `${serverAddress}/uploads/${file.filename}`;
 };

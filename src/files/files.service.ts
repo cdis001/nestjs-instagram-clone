@@ -1,4 +1,4 @@
-import { Injectable, UploadedFiles } from '@nestjs/common';
+import { Injectable, UploadedFiles, UploadedFile } from '@nestjs/common';
 
 @Injectable()
 export class FilesService {
@@ -8,6 +8,13 @@ export class FilesService {
       for (const file of files) {
         generatedFiles.push(this.createImageURL(file));
       }
+      return generatedFiles;
+    }
+
+    uploadFile(@UploadedFile() file: Express.Multer.File): string[] {
+      const generatedFiles: string[] = []
+  
+      generatedFiles.push(this.createImageURL(file[0]));
       return generatedFiles;
     }
 

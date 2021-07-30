@@ -6,17 +6,34 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProfilesDTO } from './profiles.dto';
 
 import { ProfilesService } from './profiles.service';
+import { multerOptions } from 'src/files/multerOption';
+import { FilesService } from 'src/files/files.service';
 
 @Controller('profiles')
 export class ProfilesController {
-  constructor(private readonly profilesService: ProfilesService) {}
+  constructor(
+    private readonly profilesService: ProfilesService,
+    private readonly filesService: FilesService,
+  ) {}
 
   @Post()
-  create(@Body() profile: ProfilesDTO) {
+  @UseInterceptors(FilesInterceptor('file', null, multerOptions))
+  create(
+    @Body() profile: ProfilesDTO,
+    @UploadedFiles() photo: Express.Multer.File,
+  ) {
+    if(photo !== undefined || null) {
+      const uploadedFile: string[] = this.filesService.uploadFile(photo);
+      profile.photo = uploadedFile;
+    }
+
     return this.profilesService.create(profile);
   }
 
