@@ -5,11 +5,12 @@ import { Feed } from './feed.entity';
 import { FeedsController } from './feeds.controller';
 import { FeedsService } from './feeds.service';
 import { User } from 'src/users/user.entity';
+import { FilesService } from 'src/files/files.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Feed, User])],
   controllers: [FeedsController],
-  providers: [FeedsService],
+  providers: [FeedsService, FilesService],
   exports: [TypeOrmModule],
 })
 export class FeedsModule {}

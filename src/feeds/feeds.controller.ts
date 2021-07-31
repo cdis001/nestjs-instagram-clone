@@ -16,30 +16,31 @@ import { AuthGuard } from '@nestjs/passport';
 import { FeedsService } from './feeds.service';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
-import { multerOptions } from 'src/lib/multerOption';
+import { multerOptions } from 'src/files/multerOption';
+import { FilesService } from 'src/files/files.service';
 
 @Controller('feeds')
 export class FeedsController {
-  constructor(private readonly feedsService: FeedsService) {}
+  constructor(
+    private readonly feedsService: FeedsService,
+    private readonly filesService: FilesService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FilesInterceptor('file', null, multerOptions),
-  )
+  @UseInterceptors(FilesInterceptor('file', null, multerOptions))
   create(
     @Body() feed: FeedsDTO,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     // console.log(feed);
     // console.log(files);
-    const uploadedFiles: string[] = this.feedsService.uploadFiles(files);
+    const uploadedFiles: string[] = this.filesService.uploadFiles(files);
     feed.files = uploadedFiles;
     return this.feedsService.create(feed);
   }
 
   @Get()
-  // @UseGuards(AuthGuard('local'))
   findAll() {
     return this.feedsService.findAll();
   }
