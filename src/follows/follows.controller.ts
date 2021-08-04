@@ -24,6 +24,16 @@ export class FollowsController {
     return this.followersSercive.findAll();
   }
 
+  @Get('follower/:id')
+  findByFollowerId(@Param('id') id: string) {
+    return this.followersSercive.findByFollowerId(id);
+  }
+
+  @Get('following/:id')
+  findByFollowingId(@Param('id') id: string) {
+    return this.followersSercive.findByFollowingId(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() follow: FollowsDTO) {
     return this.followersSercive.update(id, follow);
