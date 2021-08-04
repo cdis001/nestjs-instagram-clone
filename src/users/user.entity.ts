@@ -14,6 +14,7 @@ import { Feed } from 'src/feeds/feed.entity';
 import { Comment } from 'src/comments/comment.entity';
 import { Like } from 'src/likes/like.entity';
 import { Profile } from 'src/profiles/profile.entity';
+import { Follow } from 'src/follows/follow.entity';
 
 @Entity()
 export class User {
@@ -31,6 +32,12 @@ export class User {
 
   @OneToOne(() => Profile)
   profile: Profile;
+
+  @OneToMany((type) => Follow, (follow) => follow.follower)
+  followers: Follow[];
+
+  @OneToMany((type) => Follow, (follow) => follow.following)
+  followings: Follow[];
 
   @Column({ nullable: true, unique: true })
   phoneNumber: string;
