@@ -51,7 +51,7 @@ export class User {
   @Column({ nullable: false, unique: true })
   accountName: string;
 
-  @Column()
+  @Column({ nullable: false })
   password: string;
 
   // Exclude를 이용해 민감한 데이터를 응답에서 제외
