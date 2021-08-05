@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
@@ -15,10 +16,10 @@ import { ProfilesService } from './profiles/profiles.service';
 import { ProfilesModule } from './profiles/profiles.module';
 import { FilesService } from 'src/files/files.service';
 import { FollowsModule } from './follows/follows.module';
-require('dotenv').config();
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_URL,
