@@ -12,9 +12,14 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    const users = this.usersRepository.find();
-    return users;
+  async findAll() {
+    const users = await this.usersRepository.find();
+    const result = users.map((data) => {
+      const {password, refreshToken, ...userData} = data
+
+      return {user: userData}
+    })
+    return result;
   }
 
   findById(id: string): Promise<User> {
@@ -40,7 +45,7 @@ export class UsersService {
     );
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string) {
     await this.usersRepository.delete(id);
   }
 
