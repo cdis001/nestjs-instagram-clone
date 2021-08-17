@@ -17,27 +17,44 @@ export class FeedsService {
   ) {}
 
   async findAll() {
-    const data = await this.feedRepository.find({ relations: ['user'] });
-    return data;
+    const data = await this.feedRepository.find({ relations: ['user', 'like', 'comment'] });
+    const result = data.map((data) => {
+      const { user, ...feedData } = data;
+      const { password, refreshToken, ...userData } = user;
+
+      return { feed: feedData, user: userData };
+    });
+
+    return result;
   }
 
-  findById(id: string): Promise<Feed> {
-    return this.feedRepository.findOne({ id });
+  async findById(id: string) {
+    const data = await this.feedRepository.findOne({
+      where: { id },
+      relations: ['user', 'like', 'comment'],
+    });
+    const { user, ...feedData } = data;
+    const { password, refreshToken, ...userData } = user;
+
+    return { feed: feedData, user: userData };
   }
 
   async findByUserId(userId: string, index: number, take: number = 10) {
     const user = await this.userRepository.findOne({ id: userId });
-    const data = this.feedRepository
-      .createQueryBuilder('feed')
-      .leftJoinAndSelect('feed.user', 'user')
-      .where({ user })
-      .andWhere('user.id = :userId', { userId: user.id })
-      .select(['user.id', 'user.accountName', 'user.userName', 'feed.*'])
-      .take(take)
-      .skip(index)
-      .execute();
+    const data = await this.feedRepository.find({
+      where: { user },
+      skip: index,
+      take,
+      relations: ['user', 'like', 'comment'],
+    });
+    const result = data.map((data) => {
+      const { user, ...feedData } = data;
+      const { password, refreshToken, ...userData } = user;
 
-    return data;
+      return { feed: feedData, user: userData };
+    });
+
+    return result;
   }
 
   async create(feed: FeedsDTO) {

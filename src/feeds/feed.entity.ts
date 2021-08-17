@@ -28,7 +28,7 @@ export class Feed {
   @OneToMany((type) => Like, (like) => like.feed)
   likes!: Like[];
 
-  @Column('text', { nullable: true, array: true })
+  @Column('text', { nullable: false, array: true })
   files: string[];
 
   @Column({ nullable: true })
