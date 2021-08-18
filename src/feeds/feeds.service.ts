@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -63,6 +63,9 @@ export class FeedsService {
   }
 
   async create(feed: FeedsDTO) {
+    if (feed.files.length < 1) {
+      throw new HttpException('file is null', 401);
+    }
     const user = await this.userRepository.findOne({ id: feed.userId });
     const data = await this.feedRepository.create(feed);
     data.user = user;
