@@ -1,10 +1,11 @@
-import { Injectable, UploadedFiles } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from 'src/users/user.entity';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class FeedsService {
@@ -14,10 +15,14 @@ export class FeedsService {
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
+
+    private readonly filesService: FilesService,
   ) {}
 
   async findAll() {
-    const data = await this.feedRepository.find({ relations: ['user', 'like', 'comment'] });
+    const data = await this.feedRepository.find({
+      relations: ['user', 'like', 'comment'],
+    });
     const result = data.map((data) => {
       const { user, ...feedData } = data;
       const { password, refreshToken, ...userData } = user;
@@ -66,7 +71,18 @@ export class FeedsService {
   }
 
   async remove(id: string) {
-    await this.feedRepository.delete(id);
+    const data = await this.feedRepository.findOne({ id });
+
+    try {
+      const { files } = data;
+      for (const file of files) {
+        this.filesService.removeFile(file);
+      }
+      return await this.feedRepository.delete(id);
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 
   async update(id: string, feed: Feed) {
