@@ -27,7 +27,7 @@ export class FeedsController {
   ) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FilesInterceptor('file', null, multerOptions))
   create(
     @Body() feed: FeedsDTO,
