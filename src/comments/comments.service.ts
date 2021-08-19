@@ -22,7 +22,7 @@ export class CommentsService {
 
   async findAll(index: number, take: number = 10) {
     const data = await this.commentRepository.find({
-      relations: ['user', 'feed'],
+      relations: ['user', 'feed', 'likes'],
       skip: index,
       take,
     });
@@ -41,7 +41,7 @@ export class CommentsService {
     const user = await this.userRepository.findOne({ id });
     const data = await this.commentRepository.find({
       where: { user },
-      relations: ['user', 'feed'],
+      relations: ['user', 'feed', 'likes'],
       skip: index,
       take,
     });
@@ -61,7 +61,7 @@ export class CommentsService {
     const feed = await this.feedRepository.findOne({ id });
     const data = await this.commentRepository.find({
       where: { feed },
-      relations: ['user', 'feed'],
+      relations: ['user', 'feed', 'likes'],
       skip: index,
       take,
     });
@@ -80,11 +80,10 @@ export class CommentsService {
   async findById(id: string) {
     const data = await this.commentRepository.findOne({
       where: { id },
-      relations: ['user', 'feed'],
+      relations: ['user', 'feed', 'likes'],
     });
     const { user, feed, contents, createdAt, updatedAt } = data;
     const { password, refreshToken, ...userData } = user;
-    // const {...feedData} = feed
 
     return { id, user: userData, feed, contents, createdAt, updatedAt };
   }
@@ -95,6 +94,7 @@ export class CommentsService {
     const data = await this.commentRepository.create(comment);
     data.user = user;
     data.feed = feed;
+    data.likes = [];
 
     return await this.commentRepository.save(data);
   }
