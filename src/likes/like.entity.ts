@@ -17,7 +17,7 @@ export class Like {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @ManyToOne((type) => User, (user) => user.likes)
+  @ManyToOne((type) => User, (user) => user.likes, {nullable: false})
   user: User;
 
   @ManyToOne((type) => Feed, (feed) => feed.likes)

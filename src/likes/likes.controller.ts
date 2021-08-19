@@ -18,7 +18,7 @@ export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Post()
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   create(@Body() like: LikesDTO) {
     return this.likesService.create(like);
   }
