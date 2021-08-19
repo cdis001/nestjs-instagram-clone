@@ -29,7 +29,7 @@ import {
     @OneToMany((type) => Like, (like) => like.feed)
     likes!: Like[];
   
-    @Column({ nullable: true })
+    @Column({ nullable: false })
     contents: string;
     
     @CreateDateColumn() createdAt: Date;
