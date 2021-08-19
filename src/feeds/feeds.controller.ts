@@ -27,7 +27,7 @@ export class FeedsController {
   ) {}
 
   @Post()
-  // @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FilesInterceptor('file', null, multerOptions))
   create(
     @Body() feed: FeedsDTO,
@@ -36,8 +36,16 @@ export class FeedsController {
     // console.log(feed);
     // console.log(files);
     const uploadedFiles: string[] = this.filesService.uploadFiles(files);
-    feed.files = uploadedFiles;
-    return this.feedsService.create(feed);
+    try {
+      feed.files = uploadedFiles;
+      const newFeed = this.feedsService.create(feed);
+
+      return newFeed;
+    } catch (error) {
+      for (const file of uploadedFiles) {
+        this.filesService.removeFile(file);
+      }
+    }
   }
 
   @Get()

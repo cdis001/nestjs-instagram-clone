@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -21,7 +21,7 @@ export class FeedsService {
 
   async findAll() {
     const data = await this.feedRepository.find({
-      relations: ['user', 'like', 'comment'],
+      relations: ['user', 'likes', 'comments'],
     });
     const result = data.map((data) => {
       const { user, ...feedData } = data;
@@ -36,7 +36,7 @@ export class FeedsService {
   async findById(id: string) {
     const data = await this.feedRepository.findOne({
       where: { id },
-      relations: ['user', 'like', 'comment'],
+      relations: ['user', 'likes', 'comments'],
     });
     const { user, ...feedData } = data;
     const { password, refreshToken, ...userData } = user;
@@ -50,7 +50,7 @@ export class FeedsService {
       where: { user },
       skip: index,
       take,
-      relations: ['user', 'like', 'comment'],
+      relations: ['user', 'likes', 'comments'],
     });
     const result = data.map((data) => {
       const { user, ...feedData } = data;
@@ -63,9 +63,14 @@ export class FeedsService {
   }
 
   async create(feed: FeedsDTO) {
+    if (feed.files.length < 1) {
+      throw new HttpException('file is null', 401);
+    }
     const user = await this.userRepository.findOne({ id: feed.userId });
     const data = await this.feedRepository.create(feed);
     data.user = user;
+    data.likes = [];
+    data.comments = [];
 
     return await this.feedRepository.save(data);
   }
