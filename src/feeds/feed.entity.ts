@@ -22,7 +22,7 @@ export class Feed {
   @JoinColumn({ name: 'userId' })
   user!: User;
 
-  @OneToMany((type) => Comment, (comment) => comment.feed)
+  @OneToMany((type) => Comment, (comment) => comment.feed,)
   comments: Comment[];
   
   @OneToMany((type) => Like, (like) => like.feed)
