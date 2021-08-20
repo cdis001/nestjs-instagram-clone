@@ -28,13 +28,13 @@ export class ProfilesService {
 
   async findAll() {
     const data = await this.profileRepository.find({relations: ['user']})
-    // const result = data.map((data) => {
-    //   const { password, refreshToken, ...userData } = data.user;
-    //   const { id, gender, birthday } = data;
+    const result = data.map((data) => {
+      const { password, refreshToken, ...userData } = data.user;
+      const { id, gender, birthday } = data;
   
-    //   return { id, user: userData, gender, birthday };
-    // })
-    return data;
+      return { id, user: userData, gender, birthday };
+    })
+    return result;
   }
 
   async findByUserId(userId: string) {

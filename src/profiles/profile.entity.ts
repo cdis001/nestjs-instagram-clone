@@ -15,7 +15,7 @@ export class Profile {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { nullable: false })
   @JoinColumn()
   user!: User;
 
