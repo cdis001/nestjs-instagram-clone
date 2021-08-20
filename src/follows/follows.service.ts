@@ -23,14 +23,17 @@ export class FollowsService {
     const following = await this.userRepository.findOne({
       id: follow.followingId,
     });
-    let newFollow = await this.followRepository.findOne({follower, following})
-    
+    let newFollow = await this.followRepository.findOne({
+      follower,
+      following,
+    });
+
     if (newFollow) {
-        throw new HttpException(
-          '이미 팔로우 한 유저입니다.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      throw new HttpException(
+        '이미 팔로우 한 유저입니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const data = await this.followRepository.create(follow);
 
