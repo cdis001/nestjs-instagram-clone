@@ -16,10 +16,10 @@ export class Follow {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @ManyToOne((type) => User, (user) => user.followers)
+  @ManyToOne((type) => User, (user) => user.followers, { nullable: false })
   follower: User;
 
-  @ManyToOne((type) => User, (user) => user.followings)
+  @ManyToOne((type) => User, (user) => user.followings, { nullable: false })
   following: User;
 
   @Column({ default: false })
