@@ -19,7 +19,7 @@ import { FeedsDTO } from './feeds.dto';
 import { multerOptions } from 'src/files/multerOption';
 import { FilesService } from 'src/files/files.service';
 
-@Controller('feeds')
+@Controller('api/feeds')
 export class FeedsController {
   constructor(
     private readonly feedsService: FeedsService,

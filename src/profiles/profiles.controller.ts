@@ -16,7 +16,7 @@ import { ProfilesService } from './profiles.service';
 import { multerOptions } from 'src/files/multerOption';
 import { FilesService } from 'src/files/files.service';
 
-@Controller('profiles')
+@Controller('api/profiles')
 export class ProfilesController {
   constructor(
     private readonly profilesService: ProfilesService,

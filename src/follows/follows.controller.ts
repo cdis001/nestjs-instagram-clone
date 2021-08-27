@@ -10,7 +10,7 @@ import {
 import { FollowsDTO } from './follows.dto';
 import { FollowsService } from './follows.service';
 
-@Controller('follows')
+@Controller('api/follows')
 export class FollowsController {
   constructor(private readonly followersSercive: FollowsService) {}
 

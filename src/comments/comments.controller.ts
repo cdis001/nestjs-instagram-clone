@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CommentsService } from './comments.service';
 import { CommentsDTO } from './comments.dto';
 
-@Controller('comments')
+@Controller('api/comments')
 export class CommentsController {
     constructor(private readonly commentsService: CommentsService){}
 

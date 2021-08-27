@@ -13,7 +13,7 @@ import { LikesDTO } from './likes.dto';
 
 import { LikesService } from './likes.service';
 
-@Controller('likes')
+@Controller('api/likes')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 

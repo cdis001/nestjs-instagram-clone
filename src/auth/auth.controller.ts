@@ -4,7 +4,7 @@ import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
