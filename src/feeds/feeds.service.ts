@@ -27,7 +27,7 @@ export class FeedsService {
       const { user, ...feedData } = data;
       const { password, refreshToken, ...userData } = user;
 
-      return { feed: feedData, user: userData };
+      return { ...feedData, user: userData };
     });
 
     return result;
