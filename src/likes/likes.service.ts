@@ -44,7 +44,7 @@ export class LikesService {
       );
     }
 
-    return await this.likeRepository.save(newLike);;
+    return await this.likeRepository.save(newLike);
   }
 
   async findAll() {
@@ -53,56 +53,67 @@ export class LikesService {
     });
 
     const result = data.map((data) => {
-      const {user, ...likeDatas} = data
-      const {password, refreshToken, ...userData} = user
+      const { user, ...likeDatas } = data;
+      const { password, refreshToken, ...userData } = user;
 
-      return {like: likeDatas, user: userData}
-    })
+      return { ...likeDatas, user: userData };
+    });
 
     return result;
   }
 
   async findById(id: string) {
-    const data = await this.likeRepository.findOne({where: {id}, relations: ['user', 'feed', 'comment']})
-    
-    
-    const {user, ...likeDatas} = data
-    const {password, refreshToken, ...userData} = user
+    const data = await this.likeRepository.findOne({
+      where: { id },
+      relations: ['user', 'feed', 'comment'],
+    });
 
-    return {like: likeDatas, user: userData}
+    const { user, ...likeDatas } = data;
+    const { password, refreshToken, ...userData } = user;
+
+    return { ...likeDatas, user: userData };
   }
 
-  async findByFeedId(id: string){
-    const feed = await this.feedRepository.findOne({id})
-    const data = await this.likeRepository.find({where: {feed}, relations: ['feed', 'user']})
+  async findByFeedId(id: string) {
+    const feed = await this.feedRepository.findOne({ id });
+    const data = await this.likeRepository.find({
+      where: { feed },
+      relations: ['feed', 'user'],
+    });
 
     const result = data.map((data) => {
-      const {user, ...likeDatas} = data
-      const {password, refreshToken, ...userData} = user
+      const { user, ...likeDatas } = data;
+      const { password, refreshToken, ...userData } = user;
 
-      return {like: likeDatas, user: userData}
-    })
+      return { ...likeDatas, user: userData };
+    });
 
-    return result
+    return result;
   }
 
-  async findByCommentId(id: string){
-    const comment = await this.commentRepository.findOne({id})
-    const data = await this.likeRepository.find({where: {comment}, relations: ['comment', 'user']})
+  async findByCommentId(id: string) {
+    const comment = await this.commentRepository.findOne({ id });
+    const data = await this.likeRepository.find({
+      where: { comment },
+      relations: ['comment', 'user'],
+    });
 
     const result = data.map((data) => {
-      const {user, ...likeDatas} = data
-      const {password, refreshToken, ...userData} = user
+      const { user, ...likeDatas } = data;
+      const { password, refreshToken, ...userData } = user;
 
-      return {like: likeDatas, user: userData}
-    })
+      return { ...likeDatas, user: userData };
+    });
 
-    return result
+    return result;
   }
 
   async update(id: string, like: LikesDTO) {
-    const data = await this.likeRepository.findOne({where: {id}, relations: ['user']});
-    const {userId, ...newLike} = like
+    const data = await this.likeRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    const { userId, ...newLike } = like;
 
     if (data.user.id !== userId) {
       throw new HttpException(
@@ -110,13 +121,16 @@ export class LikesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     return await this.likeRepository.update({ id }, newLike);
   }
 
   async remove(id: string, userId: string) {
-    const data = await this.likeRepository.findOne({where: {id}, relations: ['user']});
-    
+    const data = await this.likeRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+
     if (data.user.id !== userId) {
       throw new HttpException(
         '작성자만 수정할 수 있습니다.',
