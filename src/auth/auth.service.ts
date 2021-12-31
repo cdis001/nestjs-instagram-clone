@@ -12,9 +12,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(accountName: string, plainTextPassword: string) {
+  async validateUser(userId: string, plainTextPassword: string) {
     try {
-      const user = await this.userService.findByAccountName(accountName);
+      const user = await this.userService.findByUserId(userId);
+
       await this.verifyPassword(plainTextPassword, user.password);
       const { password, ...result } = user;
 
@@ -50,8 +51,11 @@ export class AuthService {
   }
 
   async register(user: User) {
-    const { accountName } = user;
-    let newUser = await this.userService.findByAccountName(accountName);
+    const { accountName, email } = user;
+    let newUser = await this.userService.findByAccountNameAndEmail(
+      accountName,
+      email,
+    );
 
     if (newUser) {
       throw new HttpException(
@@ -64,14 +68,14 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(user.password, saltOrRounds);
 
     try {
-      const {password, ...returnUser} = await this.userService.create({
+      const { password, ...returnUser } = await this.userService.create({
         ...user,
-        password: hashedPassword
-      })
+        password: hashedPassword,
+      });
 
-      return returnUser
-    } catch(error) {
-      console.log(error)
+      return returnUser;
+    } catch (error) {
+      console.log(error);
       throw new HttpException(
         '회원가입에 실패했습니다.',
         HttpStatus.BAD_REQUEST,
@@ -83,26 +87,28 @@ export class AuthService {
     const payload = { accountName: user.accountName, sub: user.id };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET_KEY,
-      expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME})
-    
+      expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    });
+
     return {
       accessToken,
       httpOnly: true,
-      maxAge: Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)
-    }
+      maxAge: Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME),
+    };
   }
 
   getRefreshToken(user: any) {
     const payload = { accountName: user.accountName, sub: user.id };
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET_KEY,
-      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME})
-    
+      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+    });
+
     return {
       refreshToken,
       httpOnly: true,
-      maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME)
-    }
+      maxAge: Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME),
+    };
   }
 
   getCookiesForLogOut() {
@@ -121,5 +127,4 @@ export class AuthService {
       },
     };
   }
-
 }

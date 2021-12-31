@@ -15,10 +15,10 @@ export class UsersService {
   async findAll() {
     const users = await this.usersRepository.find();
     const result = users.map((data) => {
-      const {password, refreshToken, ...userData} = data
+      const { password, refreshToken, ...userData } = data;
 
-      return {user: userData}
-    })
+      return { user: userData };
+    });
     return result;
   }
 
@@ -36,6 +36,42 @@ export class UsersService {
 
   findByAccountName(accountName: string): Promise<User> {
     const user = this.usersRepository.findOne({ accountName });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this accountName does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  findByUserId(userId: string): Promise<User> {
+    const user = this.usersRepository.findOne({
+      where: [{ accountName: userId }, { email: userId }],
+    });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this accountName and email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  findByAccountNameAndEmail(accountName: string, email: string): Promise<User> {
+    const findAccountName = this.usersRepository.findOne({ accountName });
+    const user = this.usersRepository.findOne({ email });
+    if (findAccountName && user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this accountName does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  findByEmail(email: string): Promise<User> {
+    const user = this.usersRepository.findOne({ email });
     if (user) {
       return user;
     }
