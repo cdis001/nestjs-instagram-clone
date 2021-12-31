@@ -53,6 +53,18 @@ export class UsersService {
       return user;
     }
     throw new HttpException(
+      'User with this accountName and email does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  findByAccountNameAndEmail(accountName: string, email: string): Promise<User> {
+    const findAccountName = this.usersRepository.findOne({ accountName });
+    const user = this.usersRepository.findOne({ email });
+    if (findAccountName && user) {
+      return user;
+    }
+    throw new HttpException(
       'User with this accountName does not exist',
       HttpStatus.NOT_FOUND,
     );

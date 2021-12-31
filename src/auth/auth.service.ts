@@ -51,8 +51,11 @@ export class AuthService {
   }
 
   async register(user: User) {
-    const { accountName } = user;
-    let newUser = await this.userService.findByAccountName(accountName);
+    const { accountName, email } = user;
+    let newUser = await this.userService.findByAccountNameAndEmail(
+      accountName,
+      email,
+    );
 
     if (newUser) {
       throw new HttpException(
