@@ -83,6 +83,38 @@ export class AuthService {
     }
   }
 
+  async emailValidation(email: string) {
+    let newUser = await this.userService.findByEmail(email);
+
+    let message = '';
+    let code = false;
+
+    if (newUser) {
+      message = '이미 사용하고 있는 이메일입니다.';
+      code = false;
+    } else {
+      message = '사용 가능한 이메일입니다.';
+      code = true;
+    }
+    return { code, message };
+  }
+
+  async accountNameValidation(accountName: string) {
+    let newUser = await this.userService.findByAccountName(accountName);
+
+    let message = '';
+    let code = false;
+
+    if (newUser) {
+      message = '이미 사용하고 있는 사용자 이름입니다.';
+      code = false;
+    } else {
+      message = '사용 가능한 사용자 이름입니다.';
+      code = true;
+    }
+    return { code, message };
+  }
+
   getAccessToken(user: any) {
     const payload = { accountName: user.accountName, sub: user.id };
     const accessToken = this.jwtService.sign(payload, {

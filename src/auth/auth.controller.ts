@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Req, Res } from '@nestjs/common';
 
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -52,5 +52,15 @@ export class AuthController {
 
     res.cookie('Authentication', '', accessOption);
     res.cookie('Refresh', '', refreshOption);
+  }
+
+  @Get('emailValidation/:email')
+  async emailValidation(@Param('email') email: string) {
+    return await this.authService.emailValidation(email);
+  }
+
+  @Get('accountNameValidation/:accountName')
+  async accountNameValidation(@Param('accountName') accountName: string) {
+    return await this.authService.accountNameValidation(accountName);
   }
 }
