@@ -39,8 +39,8 @@ export class FollowsController {
     return this.followersSercive.update(id, follow);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.followersSercive.remove(id);
+  @Delete()
+  remove(@Body() follow: FollowsDTO) {
+    return this.followersSercive.remove(follow);
   }
 }
