@@ -16,9 +16,10 @@ export class AuthController {
     const user = req.body;
     const { userId, password } = user;
 
-    // console.log(user);
-
-    const userInfo = await this.authService.validateUser(userId, password);
+    const { userInfo, follower, following } = await this.authService.login(
+      userId,
+      password,
+    );
 
     const { accessToken, ...accessOption } =
       this.authService.getAccessToken(userInfo);
@@ -31,7 +32,7 @@ export class AuthController {
     res.cookie('Authorization', accessToken, accessOption);
     res.cookie('Refresh', refreshToken, refreshOption);
 
-    const result = { ...userInfo, accessToken };
+    const result = { ...userInfo, accessToken, follower, following };
     // console.log(result);
 
     return result;

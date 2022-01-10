@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { FollowsService } from 'src/follows/follows.service';
 
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -10,6 +11,7 @@ export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private followsService: FollowsService,
   ) {}
 
   async validateUser(userId: string, plainTextPassword: string) {
@@ -17,7 +19,7 @@ export class AuthService {
       const user = await this.userService.findByUserId(userId);
 
       await this.verifyPassword(plainTextPassword, user.password);
-      const { password, ...result } = user;
+      const { password, refreshToken, ...result } = user;
 
       return result;
     } catch (error) {
@@ -25,6 +27,18 @@ export class AuthService {
         '비밀번호가 일치하지 않습니다.',
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  async login(userId: string, plainTextPassword: string) {
+    try {
+      const user = await this.validateUser(userId, plainTextPassword);
+      const follower = await this.followsService.findByFollowingId(user.id);
+      const following = await this.followsService.findByFollowerId(user.id);
+
+      return { userInfo: user, follower, following };
+    } catch (error) {
+      throw new HttpException('로그인에 실패했습니다.', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -42,13 +56,15 @@ export class AuthService {
     }
   }
 
-  async login(user: any) {
-    const payload = { accountName: user.accountName, sub: user.id };
+  // async login(user: any) {
+  //   const payload = { accountName: user.accountName, sub: user.id };
+  //   const follower = await this.followsService.findByFollowerId(user.id);
 
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //     follower,
+  //   };
+  // }
 
   async register(user: User) {
     const { accountName, email } = user;
