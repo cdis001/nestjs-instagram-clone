@@ -35,12 +35,37 @@ export class FollowsService {
       );
     }
 
-    const data = await this.followRepository.create(follow);
+    const createData = await this.followRepository.create(follow);
 
-    data.follower = follower;
-    data.following = following;
+    createData.follower = follower;
+    createData.following = following;
 
-    return await this.followRepository.save(data);
+    const data = await this.followRepository.save(createData);
+
+    const followerData = {
+      id: data.follower.id,
+      phoneNumber: data.follower.phoneNumber,
+      email: data.follower.email,
+      userName: data.follower.userName,
+      accountName: data.follower.accountName,
+    };
+    const followingData = {
+      id: data.following.id,
+      phoneNumber: data.following.phoneNumber,
+      email: data.following.email,
+      userName: data.following.userName,
+      accountName: data.following.accountName,
+    };
+    const { id, checked, createdAt, updatedAt } = data;
+
+    return {
+      id,
+      follower: followerData,
+      following: followingData,
+      checked,
+      createdAt,
+      updatedAt,
+    };
   }
 
   async findAll() {
@@ -156,9 +181,17 @@ export class FollowsService {
     return data;
   }
 
-  async remove(id: string) {
-    const data = await this.followRepository.delete({ id });
+  async remove(follow: FollowsDTO) {
+    const { followerId, followingId } = follow;
+    try {
+      const follower = await this.followRepository.findOne({
+        where: { follower: followerId, following: followingId },
+      });
 
-    return data;
+      const result = await this.followRepository.delete({ id: follower.id });
+      return { id: follower.id, followerId, followingId };
+    } catch (error) {
+      throw new HttpException('failed unfollow.', HttpStatus.BAD_REQUEST);
+    }
   }
 }
