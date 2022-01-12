@@ -51,6 +51,9 @@ export class FeedsService {
       skip: index,
       take,
       relations: ['user', 'likes', 'comments'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
     const result = data.map((data) => {
       const { user, ...feedData } = data;
@@ -72,7 +75,10 @@ export class FeedsService {
     data.likes = [];
     data.comments = [];
 
-    return await this.feedRepository.save(data);
+    const saveFeed = await this.feedRepository.save(data);
+    const { password, refreshToken, ...userData } = saveFeed.user;
+
+    return { ...saveFeed, user: userData };
   }
 
   async remove(id: string) {
