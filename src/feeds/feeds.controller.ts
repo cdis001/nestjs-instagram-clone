@@ -64,6 +64,11 @@ export class FeedsController {
     return this.feedsService.findByUserId(userId, index);
   }
 
+  @Post('userFeeds')
+  findByUserIds(@Body('ids') ids: Array<string>, @Body('index') index: number) {
+    return this.feedsService.findByUserIds(ids, index);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() feed: Feed) {
     console.log(id);
