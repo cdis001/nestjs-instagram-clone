@@ -45,13 +45,43 @@ export class FeedsService {
   }
 
   async findByUserId(userId: string, index: number, take: number = 10) {
-    const user = await this.userRepository.findOne({ id: userId });
+    const user = await this.userRepository.findOne({ accountName: userId });
     const data = await this.feedRepository.find({
       where: { user },
       skip: index,
       take,
       relations: ['user', 'likes', 'comments'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
+    const result = data.map((data) => {
+      const { user, ...feedData } = data;
+      const { password, refreshToken, ...userData } = user;
+
+      return { ...feedData, user: userData };
+    });
+
+    return result;
+  }
+
+  async findByUserIds(ids: Array<string>, index: number, take: number = 10) {
+    const jsonUserData = await (
+      await this.userRepository.find({ where: [...ids] })
+    ).map((data) => {
+      return { user: data };
+    });
+
+    const data = await this.feedRepository.find({
+      where: [...jsonUserData],
+      skip: index,
+      take,
+      relations: ['user', 'likes', 'comments'],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
     const result = data.map((data) => {
       const { user, ...feedData } = data;
       const { password, refreshToken, ...userData } = user;
@@ -72,7 +102,10 @@ export class FeedsService {
     data.likes = [];
     data.comments = [];
 
-    return await this.feedRepository.save(data);
+    const saveFeed = await this.feedRepository.save(data);
+    const { password, refreshToken, ...userData } = saveFeed.user;
+
+    return { ...saveFeed, user: userData };
   }
 
   async remove(id: string) {
