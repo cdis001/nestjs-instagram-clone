@@ -76,17 +76,33 @@ export class FeedsService {
       where: [...jsonUserData],
       skip: index,
       take,
-      relations: ['user', 'likes', 'comments'],
+      relations: ['user', 'likes', 'likes.user', 'comments', 'comments.user'],
       order: {
         createdAt: 'DESC',
       },
     });
 
     const result = data.map((data) => {
-      const { user, ...feedData } = data;
+      const { user, comments, likes, ...feedData } = data;
       const { password, refreshToken, ...userData } = user;
 
-      return { ...feedData, user: userData };
+      const commentDatas = comments.map((data) => {
+        const { user, ...commentData } = data;
+        const { password, refreshToken, ...userData } = user;
+        return { ...commentData, user: userData };
+      });
+      const likeDatas = likes.map((data) => {
+        const { user, ...likeData } = data;
+        const { password, refreshToken, ...userData } = user;
+        return { ...likeData, user: userData };
+      });
+
+      return {
+        ...feedData,
+        user: userData,
+        comments: commentDatas,
+        likes: likeDatas,
+      };
     });
 
     return result;
