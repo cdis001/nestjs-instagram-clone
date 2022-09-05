@@ -100,7 +100,10 @@ export class CommentsService {
   }
 
   async update(id: string, comment: CommentsDTO, userId: string) {
-    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user'] });
+    const data = await this.commentRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
 
     if (data.user.id !== userId) {
       throw new HttpException(
@@ -114,9 +117,12 @@ export class CommentsService {
   }
 
   async remove(id: string, userId: string) {
-    const data = await this.commentRepository.findOne({ where: {id}, relations: ['user'] });
+    const data = await this.commentRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
 
-    if (data.user.id !== userId) {
+    if (data.user.id != userId) {
       throw new HttpException(
         '작성자만 삭제할 수 있습니다.',
         HttpStatus.BAD_REQUEST,
