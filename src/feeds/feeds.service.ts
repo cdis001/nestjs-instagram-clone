@@ -2,6 +2,8 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Comment } from '../comments/comment.entity';
+import { Like } from '../likes/like.entity';
 import { User } from 'src/users/user.entity';
 import { Feed } from './feed.entity';
 import { FeedsDTO } from './feeds.dto';
@@ -15,6 +17,12 @@ export class FeedsService {
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
+
+    @InjectRepository(Like)
+    private likeRepository: Repository<Like>,
+
+    @InjectRepository(Comment)
+    private commentRepository: Repository<Comment>,
 
     private readonly filesService: FilesService,
   ) {}
@@ -142,13 +150,29 @@ export class FeedsService {
   }
 
   async remove(id: string) {
-    const data = await this.feedRepository.findOne({ id });
+    const data = await this.feedRepository.findOne({
+      where: { id },
+      relations: ['user', 'likes', 'likes.user', 'comments', 'comments.user'],
+    });
 
     try {
-      const { files } = data;
+      const { files, comments, likes } = data;
+
+      const commentIds = comments.map((data) => data.id);
+      const likeIds = likes.map((data) => data.id);
+
       for (const file of files) {
         this.filesService.removeFile(file);
       }
+
+      for (const commentId of commentIds) {
+        await this.commentRepository.delete(commentId);
+      }
+
+      for (const likeId of likeIds) {
+        await this.likeRepository.delete(likeId);
+      }
+
       return await this.feedRepository.delete(id);
     } catch (err) {
       console.log(err);
