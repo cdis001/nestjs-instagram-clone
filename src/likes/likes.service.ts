@@ -33,9 +33,33 @@ export class LikesService {
     let data;
     if (like.feedId !== (null || undefined)) {
       data = await this.feedRepository.findOne({ id: like.feedId });
+
+      const feedLikeData = await this.likeRepository.findOne({
+        feed: data,
+        user,
+      });
+      if (typeof feedLikeData !== ('null' || 'undefined')) {
+        throw new HttpException(
+          '이미 좋아한 게시물 입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       newLike.feed = data;
     } else if (like.commentId !== (null || undefined)) {
       data = await this.commentRepository.findOne({ id: like.commentId });
+
+      const commentLikeData = await this.likeRepository.findOne({
+        comment: data,
+        user,
+      });
+      if (typeof commentLikeData !== ('null' || 'undefined')) {
+        throw new HttpException(
+          '이미 좋아한 댓글 입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       newLike.comment = data;
     } else {
       throw new HttpException(
@@ -43,8 +67,12 @@ export class LikesService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const saveData = await this.likeRepository.save(newLike);
 
-    return await this.likeRepository.save(newLike);
+    const { user: saveUserData, ...likeDatas } = saveData;
+    const { password, refreshToken, ...userData } = saveUserData;
+
+    return { ...likeDatas, user: saveUserData };
   }
 
   async findAll() {
