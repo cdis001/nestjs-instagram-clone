@@ -5,15 +5,20 @@ import { UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Get()
-    findAll() {
-        return this.usersService.findAll()
-    }
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
 
-    @Get(':id')
-    getById(@Param() id: string): Promise<User> {
-        return this.usersService.findById(id);
-    }
+  @Get(':id')
+  getById(@Param() id: string): Promise<User> {
+    return this.usersService.findById(id);
+  }
+
+  @Post()
+  updateUserInfo(@Body() userInfo: User) {
+    return this.usersService.updateUserInfo(userInfo);
+  }
 }

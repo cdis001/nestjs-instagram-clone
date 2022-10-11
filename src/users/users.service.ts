@@ -81,6 +81,15 @@ export class UsersService {
     );
   }
 
+  async updateUserInfo(userInfo: User) {
+    const { id } = userInfo;
+    await this.usersRepository.update({ id }, { ...userInfo });
+    const { phoneNumber, email, userName } = await this.usersRepository.findOne(
+      { id },
+    );
+    return { phoneNumber, email, userName };
+  }
+
   async remove(id: string) {
     await this.usersRepository.delete(id);
   }
