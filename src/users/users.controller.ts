@@ -13,7 +13,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  getById(@Param() id: string): Promise<User> {
+  getById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 

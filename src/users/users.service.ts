@@ -22,11 +22,12 @@ export class UsersService {
     return result;
   }
 
-  findById(id: string): Promise<User> {
-    const user = this.usersRepository.findOne({ id });
+  async findById(id: string) {
+    const user = await this.usersRepository.findOne({ id });
 
     if (user) {
-      return user;
+      const { email, userName, phoneNumber } = user;
+      return { email, userName, phoneNumber };
     }
     throw new HttpException(
       'User with this email does not exist',
