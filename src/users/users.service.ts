@@ -82,6 +82,17 @@ export class UsersService {
     );
   }
 
+  findByPhoneNumber(phoneNumber: string): Promise<User> {
+    const user = this.usersRepository.findOne({ phoneNumber });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'User with this phoneNumber does not exist',
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
   async updateUserInfo(userInfo: User) {
     const { id } = userInfo;
     await this.usersRepository.update({ id }, { ...userInfo });

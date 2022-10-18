@@ -115,6 +115,22 @@ export class AuthService {
     return { code, message };
   }
 
+  async phoneNumberValidation(phoneNumber: string) {
+    let newUser = await this.userService.findByPhoneNumber(phoneNumber);
+
+    let message = '';
+    let code = false;
+
+    if (newUser) {
+      message = '이미 사용하고 있는 전화번호입니다.';
+      code = false;
+    } else {
+      message = '사용 가능한 전화번호입니다.';
+      code = true;
+    }
+    return { code, message };
+  }
+
   async accountNameValidation(accountName: string) {
     let newUser = await this.userService.findByAccountName(accountName);
 

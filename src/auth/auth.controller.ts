@@ -64,4 +64,9 @@ export class AuthController {
   async accountNameValidation(@Param('accountName') accountName: string) {
     return await this.authService.accountNameValidation(accountName);
   }
+
+  @Get('phoneNumberValidation/:phoneNumber')
+  async phoneNumberValidation(@Param('phoneNumber') phoneNumber: string) {
+    return await this.authService.phoneNumberValidation(phoneNumber);
+  }
 }
