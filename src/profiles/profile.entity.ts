@@ -19,8 +19,8 @@ export class Profile {
   @JoinColumn()
   user!: User;
 
-  @Column('text', { nullable: true, array: true })
-  photo: string[];
+  @Column('text', { nullable: true })
+  photo: string;
 
   @Column({ nullable: true })
   gender: string;

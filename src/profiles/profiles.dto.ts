@@ -1,7 +1,7 @@
 export class ProfilesDTO {
-    id: string;
-    userId!: string;
-    photo: string[];
-    gender: string;
-    birthday: string;
-  }
+  id: string;
+  userId!: string;
+  photo: string;
+  gender: string;
+  birthday: string;
+}

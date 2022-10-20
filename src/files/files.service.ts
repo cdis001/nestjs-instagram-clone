@@ -12,11 +12,10 @@ export class FilesService {
     return generatedFiles;
   }
 
-  uploadFile(@UploadedFile() file: Express.Multer.File): string[] {
-    const generatedFiles: string[] = [];
+  uploadFile(@UploadedFile() file: Express.Multer.File): string {
+    const generatedFile: string = this.createImageURL(file);
 
-    generatedFiles.push(this.createImageURL(file[0]));
-    return generatedFiles;
+    return generatedFile;
   }
 
   createImageURL(file: Express.Multer.File): string {
@@ -27,8 +26,8 @@ export class FilesService {
 
   removeFile(fileUrl: string) {
     unlink(fileUrl, (err) => {
-      if (err) throw err;
       console.log(err);
+      if (err) throw err;
     });
   }
 }

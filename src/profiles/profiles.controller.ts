@@ -7,9 +7,9 @@ import {
   Patch,
   Post,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfilesDTO } from './profiles.dto';
 
 import { ProfilesService } from './profiles.service';
@@ -24,17 +24,12 @@ export class ProfilesController {
   ) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('file', null, multerOptions))
+  @UseInterceptors(FileInterceptor('file', multerOptions))
   create(
     @Body() profile: ProfilesDTO,
-    @UploadedFiles() photo: Express.Multer.File,
+    @UploadedFile() photo: Express.Multer.File,
   ) {
-    if(photo !== undefined || null) {
-      const uploadedFile: string[] = this.filesService.uploadFile(photo);
-      profile.photo = uploadedFile;
-    }
-
-    return this.profilesService.create(profile);
+    return this.profilesService.create(profile, photo);
   }
 
   @Get()
@@ -47,9 +42,13 @@ export class ProfilesController {
     return this.profilesService.findByUserId(userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() profile: ProfilesDTO) {
-    return this.profilesService.update(profile, id);
+  @Patch()
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  update(
+    @Body() profile: ProfilesDTO,
+    @UploadedFile() photo: Express.Multer.File,
+  ) {
+    return this.profilesService.update(profile, photo);
   }
 
   @Delete(':id')
