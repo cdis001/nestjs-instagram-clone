@@ -55,4 +55,9 @@ export class ProfilesController {
   remove(@Param('id') id: string) {
     return this.profilesService.remove(id);
   }
+
+  @Delete('user/:id')
+  removeByUserId(@Param('id') id: string) {
+    return this.profilesService.removeByUserId(id);
+  }
 }

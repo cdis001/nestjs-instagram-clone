@@ -57,13 +57,11 @@ export class ProfilesService {
   }
 
   async update(profile: ProfilesDTO, photo: Express.Multer.File) {
-    console.log(profile);
-
     const user = await this.userRepository.findOne({ id: profile.userId });
     const existingProfile = await this.profileRepository.findOne({ user });
 
     if (existingProfile) {
-      await this.remove(profile.id);
+      await this.remove(existingProfile.id);
     }
 
     const data = await this.create(profile, photo);
@@ -73,6 +71,16 @@ export class ProfilesService {
 
   async remove(id: string) {
     const existingProfile = await this.profileRepository.findOne({ id });
+    await this.filesService.removeFile(existingProfile.photo);
+
+    const data = await this.profileRepository.delete({ id });
+
+    return id;
+  }
+
+  async removeByUserId(id: string) {
+    const user = await this.userRepository.findOne({ id });
+    const existingProfile = await this.profileRepository.findOne({ user });
     await this.filesService.removeFile(existingProfile.photo);
 
     const data = await this.profileRepository.delete({ id });
